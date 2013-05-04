@@ -1,0 +1,13 @@
+{
+    "name": "ncuesta/siro",
+    "require": {
+        "silex/silex": "~1.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "José Nahuel Cuesta Luengo",
+            "email": "nahuelcuestaluengo@gmail.com"
+        }
+    ]
+}
