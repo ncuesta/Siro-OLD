@@ -14,6 +14,6 @@ class Homepage
 {
     public function index(Request $request, Application $app)
     {
-        return '<html><head></head><body><img src="' . $app['gravatar']->get('nahuelcuestaluengo@gmail.com') . '"></body></html>';
+        return $app['twig']->render('homepage/index.twig');
     }
 }

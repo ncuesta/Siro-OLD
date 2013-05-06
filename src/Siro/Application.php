@@ -18,6 +18,7 @@ class Application extends \Silex\Application
     {
         parent::__construct($values);
 
+        $this->registerServices();
         $this->registerProviders();
         $this->defineRoutes();
         $this->registerErrorHandlers();
@@ -35,36 +36,48 @@ class Application extends \Silex\Application
         //throw $error;
     }
 
+    protected function registerServices()
+    {
+        // Environment
+        $this['env']        = $this['debug'] ? 'dev' : 'prod';
+
+        // Path services
+        $this['path.root']  = $root = __DIR__ . '/../..';
+        $this['path.app']   = $app = $root . '/app';
+        $this['path.views'] = $app . '/views';
+        $this['path.cache'] = $root . '/cache';
+        $this['path.log']   = $root . '/log';
+    }
+
     /**
      * Register all service providers for this application.
      */
     protected function registerProviders()
     {
-        $rootDir  = __DIR__ . '/../..';
-        $cacheDir = $rootDir . '/cache';
-        $logFile  = $rootDir . '/log/' . ($this['debug'] ? 'dev' : 'prod') . '.log';
-
         $this
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\TwigServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
             ->register(new Provider\MonologServiceProvider(), array(
-                'monolog.logfile' => $logFile,
+                'monolog.logfile' => $this['path.log'] . '/' . $this['env'] . '.log',
                 'monolog.name'    => 'Siro',
                 'monolog.level'   => $this['debug'] ? Logger::DEBUG : Logger::INFO,
             ))
             ->register(new SilexGravatar\GravatarExtension(), array(
-                'gravatar.cache_dir'  => $cacheDir . '/gravatar',
-                'gravatar.class_path' => $rootDir . '/vendor/fate/gravatar-php/src',
+                'gravatar.cache_dir'  => $this['path.cache'] . '/gravatar',
+                'gravatar.class_path' => $this['path.root'] . '/vendor/fate/gravatar-php/src',
                 'gravatar.options'    => array(
                     'rating'  => Gravatar\Service::RATING_G,
                     'default' => Gravatar\Service::DEFAULT_RETRO,
                 ),
+            ))
+            ->register(new Provider\TwigServiceProvider(), array(
+                'twig.path' => $this['path.views'],
             ));
 
         if ($this['debug']) {
             $this->register(new Provider\WebProfilerServiceProvider(), array(
-                'profiler.cache_dir'    => __DIR__ . '/../../cache/profiler',
+                'profiler.cache_dir'    => $this['path.cache'] . '/profiler',
                 'profiler.mount_prefix' => '/_profiler',
             ));
         }

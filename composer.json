@@ -3,6 +3,8 @@
     "require": {
         "silex/silex": "~1.0",
         "silex/web-profiler": "~1.0",
+        "twig/twig": "~1.12",
+        "symfony/twig-bridge": "~2.3",
         "monolog/monolog": ">=1.0.0",
         "fate/gravatar-php": "*",
         "mheap/Silex-Gravatar": "*"
