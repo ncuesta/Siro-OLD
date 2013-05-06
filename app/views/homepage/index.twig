@@ -3,7 +3,9 @@
 {% block content %}
 <h1>Siro</h1>
 
-<img src="{{ gravatar('nahuelcuestaluengo@gmail.com') }}">
+{% if gravatar_exist('nahuelcuestaluengo@gmail.com') %}
+    <img src="{{ gravatar('nahuelcuestaluengo@gmail.com') }}">
+{% endif %}
 
 <a href="{{ path('homepage') }}">Home</a>
 {% endblock %}
