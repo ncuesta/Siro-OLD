@@ -73,6 +73,11 @@ class Application extends \Silex\Application
             ))
             ->register(new Provider\TwigServiceProvider(), array(
                 'twig.path' => $this['path.views'],
+            ))
+            ->register(new Provider\HttpCacheServiceProvider(), array(
+                'http_cache.cache_dir' => $this['path.cache'],
+                // This is disabled because no ESI support has been implemented yet.
+                'http_cache.esi'       => null,
             ));
 
         if ($this['debug']) {
