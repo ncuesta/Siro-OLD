@@ -6,7 +6,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Homepage.php
+ * Homepage
  *
  * @author José Nahuel Cuesta Luengo <nahuelcuestaluengo@gmail.com>
  */ 

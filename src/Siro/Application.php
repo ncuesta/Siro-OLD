@@ -5,6 +5,7 @@ namespace Siro;
 use \Silex\Provider;
 use \SilexGravatar;
 use \Gravatar;
+use \Monolog\Logger;
 
 /**
  * Application
@@ -34,17 +35,29 @@ class Application extends \Silex\Application
         //throw $error;
     }
 
+    /**
+     * Register all service providers for this application.
+     */
     protected function registerProviders()
     {
+        $rootDir  = __DIR__ . '/../..';
+        $cacheDir = $rootDir . '/cache';
+        $logFile  = $rootDir . '/log/' . ($this['debug'] ? 'dev' : 'prod') . '.log';
+
         $this
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\TwigServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
+            ->register(new Provider\MonologServiceProvider(), array(
+                'monolog.logfile' => $logFile,
+                'monolog.name'    => 'Siro',
+                'monolog.level'   => $this['debug'] ? Logger::DEBUG : Logger::INFO,
+            ))
             ->register(new SilexGravatar\GravatarExtension(), array(
-                'gravatar.cache_dir'  => __DIR__ . '/../../cache/gravatar',
-                'gravatar.class_path' => __DIR__ . '/../../vendor/fate/gravatar-php/src',
+                'gravatar.cache_dir'  => $cacheDir . '/gravatar',
+                'gravatar.class_path' => $rootDir . '/vendor/fate/gravatar-php/src',
                 'gravatar.options'    => array(
-                    'rating' => Gravatar\Service::RATING_G,
+                    'rating'  => Gravatar\Service::RATING_G,
                     'default' => Gravatar\Service::DEFAULT_RETRO,
                 ),
             ));
