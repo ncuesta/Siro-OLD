@@ -1,25 +1,33 @@
 {
     "name": "ncuesta/siro",
+    "license": "MIT",
+    "authors": [
+        {
+            "name"  : "José Nahuel Cuesta Luengo",
+            "email" : "nahuelcuestaluengo@gmail.com"
+        }
+    ],
     "require": {
-        "silex/silex": "~1.0",
-        "silex/web-profiler": "~1.0",
-        "twig/twig": "~1.12",
-        "symfony/twig-bridge": "~2.3",
-        "monolog/monolog": ">=1.0.0",
-        "fate/gravatar-php": "*",
-        "mheap/Silex-Gravatar": "*"
+        "php"                                           : ">=5.3.3",
+        "silex/silex"                                   : "~1.0",
+        "silex/web-profiler"                            : "~1.0",
+        "twig/twig"                                     : "~1.12",
+        "symfony/twig-bridge"                           : "~2.3",
+        "doctrine/dbal"                                 : "~2.4.0",
+        "dflydev/doctrine-orm-service-provider"         : "~1.0.0",
+        "dflydev/psr0-resource-locator-service-provider": "~1.0.0",
+        "monolog/monolog"                               : ">=1.0.0",
+        "fate/gravatar-php"                             : "*",
+        "mheap/Silex-Gravatar"                          : "*"
+    },
+    "scripts": {
+        "post-install-cmd"  : "Siro\\Composer\\Installer::install",
+        "post-update-cmd"   : "Siro\\Composer\\Installer::install"
     },
     "autoload": {
         "psr-0": {
             "Siro": "src/"
         }
     },
-    "minimum-stability": "dev",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "José Nahuel Cuesta Luengo",
-            "email": "nahuelcuestaluengo@gmail.com"
-        }
-    ]
+    "minimum-stability": "dev"
 }

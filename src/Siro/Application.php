@@ -3,6 +3,9 @@
 namespace Siro;
 
 use \Silex\Provider;
+use Dflydev\Silex\Provider\Psr0ResourceLocator\Psr0ResourceLocatorServiceProvider;
+use Dflydev\Silex\Provider\Psr0ResourceLocator\Composer\ComposerResourceLocatorServiceProvider;
+use \Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use \SilexGravatar;
 use \Gravatar;
 use \Monolog\Logger;
@@ -39,14 +42,14 @@ class Application extends \Silex\Application
     protected function registerServices()
     {
         // Environment
-        $this['env']        = $this['debug'] ? 'dev' : 'prod';
+        $this['env'] = $this['debug'] ? 'dev' : 'prod';
 
         // Path services
-        $this['path.root']  = $root = __DIR__ . '/../..';
-        $this['path.app']   = $app = $root . '/app';
-        $this['path.views'] = $app . '/views';
-        $this['path.cache'] = $root . '/cache';
-        $this['path.log']   = $root . '/log';
+        $this['path.root']      = $root = __DIR__ . '/../..';
+        $this['path.resources'] = $resources = $root . '/resources';
+        $this['path.views']     = $resources . '/views';
+        $this['path.cache']     = $resources . '/cache';
+        $this['path.log']       = $resources . '/log';
     }
 
     /**
@@ -58,6 +61,31 @@ class Application extends \Silex\Application
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\TwigServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
+            ->register(new Provider\DoctrineServiceProvider(), array(
+                'db.options' => array(
+                    'driver'   => 'pdo_mysql',
+                    'dbname'   => 'siro',
+                    'host'     => 'localhost',
+                    'user'     => 'root',
+                    'password' => null,
+                    'charset'  => 'utf-8',
+                ),
+            ))
+            ->register(new Psr0ResourceLocatorServiceProvider())
+            ->register(new ComposerResourceLocatorServiceProvider())
+            ->register(new DoctrineOrmServiceProvider(), array(
+                'orm.proxies_dir'       => $this['path.cache'] . '/proxy',
+                'orm.proxies_namespace' => 'Siro\Proxy',
+                'orm.em.options'        => array(
+                    'mappings' => array(
+                        array(
+                            'type'                => 'annotation',
+                            'namespace'           => 'Siro\Entity',
+                            'resources_namespace' => 'Siro\Entity',
+                        ),
+                    ),
+                ),
+            ))
             ->register(new Provider\MonologServiceProvider(), array(
                 'monolog.logfile' => $this['path.log'] . '/' . $this['env'] . '.log',
                 'monolog.name'    => 'Siro',
@@ -81,6 +109,7 @@ class Application extends \Silex\Application
             ));
 
         if ($this['debug']) {
+            // Enable the Web Profiler only for the Debug environment
             $this->register(new Provider\WebProfilerServiceProvider(), array(
                 'profiler.cache_dir'    => $this['path.cache'] . '/profiler',
                 'profiler.mount_prefix' => '/_profiler',

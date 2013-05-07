@@ -1,4 +1,4 @@
 .idea
 /vendor/
-/cache/*
-/log/*
+/resources/cache/*
+/resources/log/*
