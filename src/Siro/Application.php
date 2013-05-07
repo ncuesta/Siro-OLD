@@ -3,8 +3,8 @@
 namespace Siro;
 
 use \Silex\Provider;
-use Dflydev\Silex\Provider\Psr0ResourceLocator\Psr0ResourceLocatorServiceProvider;
-use Dflydev\Silex\Provider\Psr0ResourceLocator\Composer\ComposerResourceLocatorServiceProvider;
+use \Dflydev\Silex\Provider\Psr0ResourceLocator\Psr0ResourceLocatorServiceProvider;
+use \Dflydev\Silex\Provider\Psr0ResourceLocator\Composer\ComposerResourceLocatorServiceProvider;
 use \Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use \SilexGravatar;
 use \Gravatar;
@@ -19,6 +19,10 @@ class Application extends \Silex\Application
 {
     public function __construct($values = array())
     {
+        if (array_key_exists('environment', $values) && $values['environment'] === 'debug') {
+            $values['debug'] = true;
+        }
+
         parent::__construct($values);
 
         $this->registerServices();

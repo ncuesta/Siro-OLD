@@ -17,6 +17,6 @@ class Installer
         chmod('resources/cache', 0777);
         chmod('resources/log', 0777);
         //chmod('web/assets', 0777);
-        //chmod('console', 0500);
+        chmod('console', 0500);
     }
 }
